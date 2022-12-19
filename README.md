@@ -1,1 +1,3 @@
-# code-advent-2022
+# Advent of Code 2022
+
+My attempt at the challenge.
