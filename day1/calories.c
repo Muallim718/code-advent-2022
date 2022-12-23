@@ -42,7 +42,24 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    printf("The maximum amount of calories is %i.\n", max);
+    printf("The maximum amount of calories is %i calories.\n", max);
+
+    for (int i = 0; i < elf_number; i++) {
+        for (int j = 0; j < elf_number - 1; j++) {
+            int first_num = calories[j];
+            int second_num = calories[j + 1];
+            if (first_num < second_num) {
+                int lower = calories[j];
+                int higher = calories[j + 1];
+
+                calories[j] = higher;
+                calories[j + 1] = lower;
+            }
+        }
+    }
+    int top_three = calories[0] + calories[1] + calories[2];
+
+    printf("The amount of calories held by the top three elves is %i calories.\n", top_three);
 
     fclose(file);
     return 0;
