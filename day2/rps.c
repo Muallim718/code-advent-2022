@@ -74,17 +74,9 @@ struct hand player_outcome(int player_score, int opponents_score) {
     struct hand player;
     player.rock = false; player.paper = false; player.scissors = false;
 
-    if (player_score == WIN && opponents_score == ROCK) player.paper = true;
-    else if (player_score == WIN && opponents_score == PAPER) player.scissors = true;
-    else if (player_score == WIN && opponents_score == SCISSORS) player.rock = true;
-
-    else if (player_score == DRAW && opponents_score == ROCK) player.rock = true;
-    else if (player_score == DRAW && opponents_score == PAPER) player.paper = true;
-    else if (player_score == DRAW && opponents_score == SCISSORS) player.scissors = true;
-
-    else if (player_score == LOSS && opponents_score == ROCK) player.scissors = true;
-    else if (player_score == LOSS && opponents_score == PAPER) player.rock = true;
-    else if (player_score == LOSS && opponents_score == SCISSORS) player.paper = true;
+    if ((player_score == WIN && opponents_score == SCISSORS) || (player_score == DRAW && opponents_score == ROCK) || (player_score == LOSS && opponents_score == PAPER)) player.rock = true;
+    else if ((player_score == WIN && opponents_score == ROCK) || (player_score == DRAW && opponents_score == PAPER) || (player_score == LOSS && opponents_score == SCISSORS)) player.paper = true;
+    else if ((player_score == WIN && opponents_score == PAPER) || (player_score == DRAW && opponents_score == SCISSORS) || (player_score == LOSS && opponents_score == ROCK)) player.scissors = true;
 
     return player;
 }
