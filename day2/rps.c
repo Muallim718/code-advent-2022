@@ -18,9 +18,8 @@ struct hand {
 
 int player_point_adjustment(char choice);
 int opponent_point_adjustment(char choice);
-struct hand player_outcome(int player_score);
-struct hand opponent_outcome(int player_score);
-int outcome(struct hand player, struct hand opponent);
+struct hand player_outcome(int player_score, int opponents_score);
+int outcome(struct hand player);
 
 int main(int argc, char *argv[]) {
 
@@ -42,27 +41,26 @@ int main(int argc, char *argv[]) {
     }
 
     struct hand player;
-    struct hand opponent;
 
     while (fgets(buffer, SIZE, file) != NULL) {
         char opponents_choice = buffer[0];
         char players_choice = buffer[2];
         players_score = player_point_adjustment(players_choice);
         opponents_score = opponent_point_adjustment(opponents_choice);
-        player = player_outcome(players_score);
-        opponent = opponent_outcome(opponents_score);
-        true_score = players_score + outcome(player, opponent);
-        total_score += true_score;
+        player = player_outcome(players_score, opponents_score);
+        true_score = players_score + outcome(player);
+        total_score += true_score;;
     }
     printf("You will have a total score of %i!\n", total_score);
 
+    fclose(file);
     return 0;
 }
 
 int player_point_adjustment(char players_choice) {
-    if (players_choice == 'X') return ROCK;
-    else if (players_choice == 'Y') return PAPER;
-    return SCISSORS;
+    if (players_choice == 'X') return LOSS;
+    else if (players_choice == 'Y') return DRAW;
+    return WIN;
 }
 
 int opponent_point_adjustment(char opponents_choice) {
@@ -71,33 +69,29 @@ int opponent_point_adjustment(char opponents_choice) {
     return SCISSORS;
 }
 
-struct hand player_outcome(int player_score) {
+struct hand player_outcome(int player_score, int opponents_score) {
 
     struct hand player;
     player.rock = false; player.paper = false; player.scissors = false;
 
-    if (player_score == 1) player.rock = true;
-    else if (player_score == 2) player.paper = true;
-    else player.scissors = true;
+    if (player_score == WIN && opponents_score == ROCK) player.paper = true;
+    else if (player_score == WIN && opponents_score == PAPER) player.scissors = true;
+    else if (player_score == WIN && opponents_score == SCISSORS) player.rock = true;
+
+    else if (player_score == DRAW && opponents_score == ROCK) player.rock = true;
+    else if (player_score == DRAW && opponents_score == PAPER) player.paper = true;
+    else if (player_score == DRAW && opponents_score == SCISSORS) player.scissors = true;
+
+    else if (player_score == LOSS && opponents_score == ROCK) player.scissors = true;
+    else if (player_score == LOSS && opponents_score == PAPER) player.rock = true;
+    else if (player_score == LOSS && opponents_score == SCISSORS) player.paper = true;
 
     return player;
 }
 
-struct hand opponent_outcome(int opponent_score) {
+int outcome(struct hand player) {
 
-    struct hand opponent;
-    opponent.rock = false; opponent.paper = false; opponent.scissors = false;
-
-    if (opponent_score == 1) opponent.rock = true;
-    else if (opponent_score == 2) opponent.paper = true;
-    else opponent.scissors = true;
-
-    return opponent;
-}
-
-int outcome(struct hand player, struct hand opponent) {
-
-    if ((player.rock && opponent.scissors) || (player.paper && opponent.rock) || (player.scissors && opponent.paper)) return WIN;
-    else if ((player.scissors && opponent.rock) || (player.rock && opponent.paper) || (player.paper && opponent.scissors)) return LOSS;
-    else if ((player.rock && opponent.rock) || (player.paper && opponent.paper) || (player.scissors && opponent.scissors)) return DRAW;
+    if (player.rock) return ROCK;
+    else if (player.paper) return PAPER;
+    else if (player.scissors) return SCISSORS;
 }
