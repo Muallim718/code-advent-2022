@@ -50,5 +50,6 @@ int main(int argc, char *argv[]) {
     }
     printf("The sum of the priorities of all items is %i!\n", priority_sum);
 
+    fclose(file);
     return 0;
 }
