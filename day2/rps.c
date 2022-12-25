@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
         true_score = players_score + outcome(player);
         total_score += true_score;;
     }
-    printf("You will have a total score of %i!\n", total_score);
+    printf("The elf will have a total score of %i!\n", total_score);
 
     fclose(file);
     return 0;
