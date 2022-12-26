@@ -79,4 +79,7 @@ int main(int argc, char *argv[]) {
     free(first_elf);
     free(second_elf);
     free(third_elf);
+
+    fclose(file);
+    return 0;
 }
