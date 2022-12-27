@@ -11,6 +11,7 @@ struct section {
 };
 
 bool pair(struct section first_elf, struct section second_elf);
+bool overlap(struct section first_elf, struct section second_elf);
 
 int main(int argc, char *argv[]) {
 
@@ -18,7 +19,7 @@ int main(int argc, char *argv[]) {
     char buffer[SIZE];
     char *token;
     int length, token_number;
-    int iteration = 1, pair_count = 0;
+    int iteration = 1, pair_count = 0, overlap_count = 0;
 
     if (!file) {
         printf("File failed to open.\n");
@@ -53,8 +54,10 @@ int main(int argc, char *argv[]) {
             iteration++;
         }
         if (pair(first_elf, second_elf)) pair_count++;
+        if (overlap(first_elf, second_elf)) overlap_count++;
     }
-    printf("There are %i pairs!\n.", pair_count);
+    printf("There are %i pairs!\n", pair_count);
+    printf("There are %i overlapping pairs!\n.", overlap_count);
 
     fclose(file);
     return 0;
@@ -64,5 +67,27 @@ bool pair(struct section first_elf, struct section second_elf) {
 
     if ((first_elf.min >= second_elf.min) && (first_elf.max <= second_elf.max)) return true;
     else if ((first_elf.min <= second_elf.min) && (first_elf.max >= second_elf.max)) return true;
+    return false;
+}
+
+bool overlap(struct section first_elf, struct section second_elf) {
+
+    int first_elf_numbers[SIZE], second_elf_numbers[SIZE];
+    int first_elf_amount = first_elf.max - first_elf.min;
+    int second_elf_amount = second_elf.max - second_elf.min;
+
+    for (int i = 0; i <= first_elf_amount; i++) {
+        first_elf_numbers[i] = i + first_elf.min;
+    }
+
+    for (int i = 0; i <= second_elf_amount; i++) {
+        second_elf_numbers[i] = i + second_elf.min;
+    }
+
+    for (int i = 0; i <= first_elf_amount; i++) {
+        for (int j = 0; j <= second_elf_amount; j++) {
+            if (first_elf_numbers[i] == second_elf_numbers[j]) return true;
+        }
+    }
     return false;
 }
