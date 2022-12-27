@@ -1,8 +1,24 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define SIZE 100
+
+struct section {
+    int min;
+    int max;
+};
+
+bool pair(struct section first_elf, struct section second_elf);
 
 int main(int argc, char *argv[]) {
 
     FILE *file = fopen(argv[1], "r");
+    char buffer[SIZE];
+    char *token;
+    int length, token_number;
+    int iteration = 1, pair_count = 0;
 
     if (!file) {
         printf("File failed to open.\n");
@@ -14,5 +30,39 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    struct section first_elf;
+    struct section second_elf;
+
+    while(feof(file) != true) {
+        fgets(buffer, SIZE, file);
+        length = strlen(buffer);
+        buffer[length - 1] = '\0';
+        for (int i = 0; i < length; i++) {
+            if (buffer[i] == '-') {
+                buffer[i] = ',';
+            }
+        }
+        token = strtok(buffer, ",");
+        while (token != NULL) {
+            token_number = atoi(token);
+            if (iteration == 1) first_elf.min = token_number;
+            else if (iteration == 2) first_elf.max = token_number;
+            else if (iteration == 3) second_elf.min = token_number;
+            else if (iteration == 4) second_elf.max = token_number, iteration = 0;
+            token = strtok(NULL, ",");
+            iteration++;
+        }
+        if (pair(first_elf, second_elf)) pair_count++;
+    }
+    printf("There are %i pairs!\n.", pair_count);
+
+    fclose(file);
     return 0;
+}
+
+bool pair(struct section first_elf, struct section second_elf) {
+
+    if ((first_elf.min >= second_elf.min) && (first_elf.max <= second_elf.max)) return true;
+    else if ((first_elf.min <= second_elf.min) && (first_elf.max >= second_elf.max)) return true;
+    return false;
 }
