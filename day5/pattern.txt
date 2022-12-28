@@ -1,0 +1,33 @@
+                        [Z] [W] [Z]
+        [D] [M]         [L] [P] [G]
+    [S] [N] [R]         [S] [F] [N]
+    [N] [J] [W]     [J] [F] [D] [F]
+[N] [H] [G] [J]     [H] [Q] [H] [P]
+[V] [J] [T] [F] [H] [Z] [R] [L] [M]
+[C] [M] [C] [D] [F] [T] [P] [S] [S]
+[S] [Z] [M] [T] [P] [C] [D] [C] [D]
+ 1   2   3   4   5   6   7   8   9 
+
+Line Counter:
+0123456789
+
+Line        Column Position
+1           1
+5           2
+9           3
+13          4
+17          5
+21          6
+
+Line -> Column Position
+
+Line - 3 * x = Column Position
+
+x = Column Position - 1
+
+Line - 3 * (Column Position - 1) = Column Position
+Line - 3 * Column Position + 3 = Column Position
+Line + 3 = 4 * Column Position
+
+
+Column Position = (Line + 3) / 4 
