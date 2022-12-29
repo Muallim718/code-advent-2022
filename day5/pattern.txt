@@ -30,4 +30,6 @@ Line - 3 * Column Position + 3 = Column Position
 Line + 3 = 4 * Column Position
 
 
-Column Position = (Line + 3) / 4 
+Column Position = (Line + 3) / 4
+
+Make it zero-indexed -> Column Position = (Line + 3) / 4 - 1

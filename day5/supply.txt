@@ -509,4 +509,4 @@ move 2 from 1 to 9
 move 16 from 1 to 7
 move 17 from 5 to 8
 move 1 from 1 to 2
-move 3 from 9 to 6
+move 3 from 9 to 6 
