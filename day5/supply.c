@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
             for (int i = 0; i < crate_amount; i++) {
-                int source_top = crate_lengths[source_crate - 1] - 1 - i;
+                int source_top = crate_lengths[source_crate - 1] - crate_amount + i;
                 int destination_top = crate_lengths[destination_crate - 1] + i;
                 int original_crate = supply_crate[source_top][source_crate - 1];
                 
