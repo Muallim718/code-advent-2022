@@ -17,8 +17,6 @@ int main(int argc, char *argv[]) {
     int length;
     int (*supply_crate)[COLUMN_SIZE];
 
-    supply_crate = malloc(sizeof(*supply_crate) * ROW_MAX);
-
     if (!file) {
         printf("File failed to open.\n");
         return 1;
@@ -26,6 +24,13 @@ int main(int argc, char *argv[]) {
 
     if (argc != 2) {
         printf("Usage: ./supply supply.txt");
+        return 1;
+    }
+
+    supply_crate = malloc(sizeof(*supply_crate) * ROW_MAX);
+
+    if (supply_crate == NULL) {
+        printf("Malloc failed.\n");
         return 1;
     }
 
@@ -40,8 +45,7 @@ int main(int argc, char *argv[]) {
                 line++;
                 if (isalpha(buffer[i])) {
                     column_position = (line + 3) / 4 - 1;
-                    
-                    supply_crate[column_position][crate_position] = buffer[i];
+                    supply_crate[crate_position][column_position] = buffer[i];
                 } 
                 else if (buffer[i] == '\0') {
                     line = 0;
@@ -56,12 +60,15 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    for (int i = 0; i < COLUMN_SIZE; i++) {
-        for (int j = 0; j < ROW_MAX; j++) {
-            printf("%c", supply_crate[i][j]);
-        }
-        printf("\n");
-    }
+
+    
+    //for (int i = 0; i < COLUMN_SIZE; i++) {
+    //    for (int j = 0; j < ROW_MAX; j++) {
+    //        if (supply_crate[j][i] != '\0') printf("%c", supply_crate[j][i]);
+    //    }
+    //    printf("\n");
+    //}
+    
     
     free(supply_crate);
     fclose(file);
