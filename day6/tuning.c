@@ -2,7 +2,7 @@
 #include <string.h>
 
 #define BUFFER_SIZE 5000
-#define ARRAY_SIZE 4
+#define ARRAY_SIZE 14
 
 char *packet(char *array, char *buffer);
 int location_marker = 0;
@@ -14,7 +14,8 @@ int main(int argc, char *argv[]) {
     char buffer_copy[BUFFER_SIZE];
     char array[ARRAY_SIZE];
     char packet_begin[ARRAY_SIZE];
-    int character_match = 0, character_count = 0, offset = 0;
+    int character_match = 0, character_count = 0, procressed_characters = 0;
+    int offset = 1;
 
     if (!file) {
         printf("File failed to open.\n");
@@ -37,19 +38,20 @@ int main(int argc, char *argv[]) {
     }
     
     for (int i = 0; i < BUFFER_SIZE; i++) {
-        if (character_match != ARRAY_SIZE) {
+        if (character_match == ARRAY_SIZE) break;
+        else if (character_match != ARRAY_SIZE) {
             character_match = 0;
             character_count++;
             for (int j = 0; j < ARRAY_SIZE; j++) {
-                if (packet_begin[j % 4] == buffer_copy[i + j]) {
-                    offset = j;
+                if (packet_begin[j % ARRAY_SIZE] == buffer_copy[i + j]) {
                     character_match++;
                 }
             }
         }
     }
 
-    printf("The number of processed characters before the first start-of-packet marker is %i!\n", character_count + offset);
+    procressed_characters = character_count + ARRAY_SIZE - offset;
+    printf("The number of processed characters before the first start-of-packet marker is %i!\n", procressed_characters);
 
     fclose(file);
     return 0;
