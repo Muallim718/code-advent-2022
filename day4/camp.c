@@ -34,16 +34,17 @@ int main(int argc, char *argv[]) {
     struct section first_elf;
     struct section second_elf;
 
-    while(feof(file) != true) {
-        fgets(buffer, SIZE, file);
+    while(fgets(buffer, SIZE, file) != NULL) {
         length = strlen(buffer);
         buffer[length - 1] = '\0';
+
         for (int i = 0; i < length; i++) {
             if (buffer[i] == '-') {
                 buffer[i] = ',';
             }
         }
         token = strtok(buffer, ",");
+
         while (token != NULL) {
             token_number = atoi(token);
             if (iteration == 1) first_elf.min = token_number;
@@ -53,6 +54,7 @@ int main(int argc, char *argv[]) {
             token = strtok(NULL, ",");
             iteration++;
         }
+        
         if (pair(first_elf, second_elf)) pair_count++;
         if (overlap(first_elf, second_elf)) overlap_count++;
     }
