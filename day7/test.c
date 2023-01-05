@@ -47,7 +47,9 @@ int main(int argc, char *argv[]) {
     tree_node *file_info;
     tree_node *current_directory;
 
+    // Initialize the root directory node
     root = create_node(ROOT_DIRECTORY, NULL, IS_DIRECTORY, DIRECTORY_SIZE);
+    // Set it as the base node
     current_directory = root;
 
     if (!file) {
@@ -64,49 +66,62 @@ int main(int argc, char *argv[]) {
         buffer_length = strlen(buffer);
         buffer[buffer_length - 1] = '\0';
 
-
+        // If a directory is encountered
         if (*buffer == DIRECTORY_HEADER) {
+            // Obtain the directory's name
             items_parsed = sscanf(buffer, "dir %s", directory_name);
             if (items_parsed != 1) {
                 printf("Failed to obtain directory information.\n");
                 return 1;
             }
 
+            // Create a node for the directory
             directory = create_node(directory_name, current_directory, IS_DIRECTORY, DIRECTORY_SIZE);
+            // Make it a children of the current parent directory
             add_file(current_directory, directory);
-            free_tree(directory);
         }
 
+        // If a file is encountered
         else if (isdigit(*buffer)) {
+            // Obtain the file's name and size
             items_parsed = sscanf(buffer, "%i %s", &file_size, file_name);
             if (items_parsed != 2) {
                 printf("Failed to obtain file information.\n");
                 return 1;
             }
 
+            // Create a node for the file
             file_info = create_node(file_name, current_directory, IS_FILE, file_size);
+            // Make it a children of the current parent directory
             add_file(current_directory, file_info);
-            free_tree(file_info);
         }
 
+        // If cd-ing into a new directory
         else if (check_command(buffer) == 0) {
+            // Obtain the name of the directory being entered
             items_parsed = sscanf(buffer, "$ cd %s", directory_name);
             if (items_parsed != 1) {
                 printf("Failed to obtain directory information.\n");
                 return 1;
             }
             
+            // Update the current directory
             current_directory = create_node(directory_name, current_directory, IS_DIRECTORY, DIRECTORY_SIZE);
-            free_tree(current_directory);
         }
 
+        // If there is a directory change, up one level, cd ..
         else if (strcmp(buffer, DIRECTORY_CHANGE) == 0) {
-            //current_directory = current_directory -> directory;
+            // Go up one level
+            // Update the current directory such that the parent directory is the new directory
+            current_directory = current_directory -> directory;
         }
     }
 
     print_tree(root);
     free_tree(root);
+    free_tree(current_directory);
+    free_tree(directory);
+    free(file_info);
     fclose(file);
     return 0;
 }
