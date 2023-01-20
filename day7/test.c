@@ -21,16 +21,16 @@ typedef struct tree_node {
     struct tree_node **file;
     char *file_name;
     int file_size;
-    int is_directory;
+    int file_type;
     int num_file;
     int capacity;
 } tree_node;
 
-tree_node *create_node(char *file_name, tree_node *directory, int is_directory, int file_size);
-void add(tree_node *directory, tree_node *file);
+tree_node *create_node(char *file_name, tree_node *directory, int file_type, int file_size);
+void add_file(tree_node *directory, tree_node *file);
 void free_tree(tree_node *node); 
 void print_tree(tree_node *node);
-bool check_command(char *command);
+bool cd_directory(char *command);
 
 int main(int argc, char *argv[]) {
 
@@ -40,10 +40,7 @@ int main(int argc, char *argv[]) {
     char new_directory_name[BUFFER_SIZE];
     char directory_name[BUFFER_SIZE];
     char file_name[BUFFER_SIZE];
-
     int buffer_length = 0, items_parsed = 0, file_size = 0;
-
-    int count = 0;
 
     tree_node *root;
     tree_node *directory;
@@ -82,7 +79,7 @@ int main(int argc, char *argv[]) {
             // Create a node for the directory
             directory = create_node(directory_name, current_directory, IS_DIRECTORY, DIRECTORY_SIZE);
             // Make it a children of the current parent directory
-            add(current_directory, directory);
+            add_file(current_directory, directory);
         }
 
         // If a file is encountered
@@ -97,11 +94,11 @@ int main(int argc, char *argv[]) {
             // Create a node for the file
             file_info = create_node(file_name, current_directory, IS_FILE, file_size);
             // Make it a children of the current parent directory
-            add(current_directory, file_info);
+            add_file(current_directory, file_info);
         }
 
         // If cd-ing into a new directory
-        else if (check_command(buffer) == 0) {
+        else if (cd_directory(buffer) == 0) {
             
             // Obtain the name of the directory being entered
             items_parsed = sscanf(buffer, "$ cd %s", directory_name);
@@ -116,7 +113,6 @@ int main(int argc, char *argv[]) {
                     current_directory = current_directory -> file[i];
                 }
             }
-            count++;
         }
 
         // If there is a directory change, up one level, cd ..
@@ -133,7 +129,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-bool check_command(char *command) {
+bool cd_directory(char *command) {
     if (*command == COMMAND_START) {
         if (strcmp(command, DIRECTORY_CHANGE) == 0 || strcmp(command, LIST_ITEMS) == 0 || strcmp(command, ROOT_DIRECTORY_DES) == 0) {
             return true;
@@ -143,7 +139,7 @@ bool check_command(char *command) {
     return false;
 }
 
-tree_node *create_node(char *file_name, tree_node *directory, int is_directory, int file_size) {
+tree_node *create_node(char *file_name, tree_node *directory, int file_type, int file_size) {
     int null_character = 1;
     int file_length = strlen(file_name) + null_character;
 
@@ -153,7 +149,7 @@ tree_node *create_node(char *file_name, tree_node *directory, int is_directory, 
     node -> file =  malloc(sizeof(tree_node) * node -> capacity);
     node -> file_size = file_size;
     node -> directory = directory;
-    node -> is_directory = is_directory;
+    node -> file_type = file_type;
     node -> num_file = 0;
 
     strcpy(node -> file_name, file_name);
@@ -161,16 +157,16 @@ tree_node *create_node(char *file_name, tree_node *directory, int is_directory, 
     return node;
 }
 
-void add(tree_node *parent, tree_node *child) {
+void add_file(tree_node *directory, tree_node *file) {
     int growth_factor = 2;
 
-    if (parent -> capacity == parent -> num_file) {
-        parent -> capacity = parent -> capacity * growth_factor; 
-        parent -> file = realloc(parent -> file, parent -> capacity * sizeof(tree_node*));
+    if (directory -> capacity == directory -> num_file) {
+        directory -> capacity = directory -> capacity * growth_factor; 
+        directory -> file = realloc(directory -> file, directory -> capacity * sizeof(tree_node*));
     }
 
-    parent -> file[parent -> num_file] = child;
-    parent -> num_file++;
+    directory -> file[directory -> num_file] = file;
+    directory -> num_file++;
 }
 
 void free_tree(tree_node *node) {
